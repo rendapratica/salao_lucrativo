@@ -8,22 +8,28 @@
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#4c1d95">
-<script>try{var t=localStorage.getItem("sl_tema");if(!t)t=matchMedia("(prefers-color-scheme: dark)").matches?"escuro":"claro";document.documentElement.dataset.tema=t}catch(e){}</script>
+<meta name="theme-color" content="#c2186f">
+<script>try{var t=localStorage.getItem("sl_tema");if(!t)t="claro";document.documentElement.dataset.tema=t}catch(e){}</script>
 <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body data-tela="inicio">
 <aside id="menu">
-  <div class="marca"><b>Salão Lucrativo</b><small>RendaPrática</small></div>
+  <div class="marca"><img class="marca-ico" src="assets/logo-salao.png" alt="" width="125" height="158"><b>Salão Lucrativo</b><small>RendaPrática</small></div>
   <nav id="nav"></nav>
+  <div class="menu-rodape">
+    <p class="slogan">Beleza e bem-estar<br>sempre! <span>♡</span></p>
+    <img class="logo-rp" src="assets/logo-rendapratica.png" alt="RendaPrática — Soluções digitais para o seu sucesso" width="520" height="512">
+  </div>
 </aside>
 <div id="conteudo">
-  <header><button id="btnMenu" aria-label="Abrir menu">☰</button><h1 id="titulo"></h1><button id="btnTema" class="sec peq" type="button"></button></header>
+  <div id="hero"><div class="pill-titulo"><span id="heroIco"></span><b>Início</b></div></div>
+  <header><button id="btnMenu" aria-label="Abrir menu"></button><h1 id="titulo"></h1><button id="btnTema" class="sec peq" type="button"></button></header>
   <main id="view"></main>
 </div>
 <dialog id="dlg"></dialog>
 <div id="toasts" aria-live="polite"></div>
 <div id="modal" hidden><div class="caixa"><p id="modalTexto"></p><div class="acoes"><button class="sec" id="modalNao">Cancelar</button><button id="modalSim">Confirmar</button></div></div></div>
+<script src="js/icones.js"></script>
 <script src="js/database.js"></script>
 <script src="js/backup.js"></script>
 <script src="js/configuracoes.js"></script>

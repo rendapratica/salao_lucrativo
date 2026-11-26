@@ -4,7 +4,7 @@ const Licenca={
   K:'sl_licenca',instalar:null,
   obter(){try{return JSON.parse(localStorage.getItem(this.K))}catch(e){return null}},
   formatoOk(c){return/^[A-Za-z0-9-]{8,64}$/.test(c)},
-  aviso(){return this.obter()?'':'<div class="aviso">Nenhuma chave de licença registrada neste dispositivo. O sistema continua funcionando normalmente. <a href="#licenca">Registrar chave</a></div>'},
+  aviso(){return this.obter()?'':`<div class="aviso ic alerta">${Icones.svg('warn')}<span>Nenhuma chave de licença registrada neste dispositivo. O sistema continua funcionando normalmente. <a href="#licenca">Registrar chave</a></span></div>`},
   async render(el){
     const l=this.obter(),h=UI.h,inst=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
     el.innerHTML=`<div class="card"><h2>Licença</h2>

@@ -2,7 +2,7 @@ const Dashboard={
   iso(d){return d.toLocaleDateString('sv-SE')},
   meses(n,ref=new Date()){return Array.from({length:n},(_,k)=>{const i=n-1-k,a=new Date(ref.getFullYear(),ref.getMonth()-i,1),b=new Date(ref.getFullYear(),ref.getMonth()-i+1,0);return{rot:a.toLocaleDateString('pt-BR',{month:'short',year:'2-digit'}),de:this.iso(a),ate:this.iso(b)}})},
   csv(l){const e=v=>{v=v==null?'':String(v);return/[",;\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};return'\ufeff'+l.map(r=>r.map(e).join(';')).join('\n')},
-  periodo(){const h=U.hoje();return`<div class="barra"><div style="flex:1"><label for="de">De</label><input id="de" type="date" value="${h.slice(0,8)}01"></div><div style="flex:1"><label for="ate">Até</label><input id="ate" type="date" value="${h}"></div></div>`},
+  periodo(){const h=U.hoje();return`<div class="periodo"><div><label for="de">De</label><input id="de" type="date" value="${h.slice(0,8)}01"></div><div><label for="ate">Até</label><input id="ate" type="date" value="${h}"></div></div>`},
   grafico(host,rot,series,fmt){
     if(window.Chart){Chart.defaults.color=getComputedStyle(document.documentElement).getPropertyValue('--texto').trim()||'#333';host.innerHTML='<canvas></canvas>';
       new Chart(host.firstChild,{type:'bar',data:{labels:rot,datasets:series.map(s=>({label:s.nome,data:s.dados,backgroundColor:s.cor}))},options:{responsive:true,plugins:{legend:{display:series.length>1}}}});return}
@@ -19,15 +19,16 @@ const Dashboard={
       const nc=Object.fromEntries(cl.map(c=>[c.id,c.nome])),mes=h.slice(5,7),aniv=cl.filter(c=>c.nascimento&&c.nascimento.slice(5,7)===mes).sort((a,b)=>a.nascimento.slice(8).localeCompare(b.nascimento.slice(8)));
       const per=at.filter(a=>a.data>=de.value&&a.data<=ate.value),cont={};per.forEach(a=>a.itens.forEach(i=>cont[i.nome]=(cont[i.nome]||0)+1));const top=Object.entries(cont).sort((a,b)=>b[1]-a[1]).slice(0,6);
       const fim=pk.filter(x=>x.sessoesUsadas<x.sessoesTotal&&x.validade>=h&&(x.validade<=U.add(h,15)||x.sessoesTotal-x.sessoesUsadas<=1));
-      const M=(t,v)=>`<div class="card metrica"><small>${t}</small><div class="total-os">${v}</div></div>`;
-      p.innerHTML=`<div class="grade">${M('Atendimentos hoje',hoje.length)}${M('Próximo horário',prox?`${prox.hora}${prox.data!==h?' ('+U.data(prox.data).slice(0,5)+')':''} · ${UI.h(nc[prox.clienteId]||'')}`:'—')}${M('Receita no período',R(f.receita))}${M('Despesas pagas',R(f.despesas))}${M('Comissões',R(f.comissoes))}${M('Lucro estimado',R(f.lucro))}${M('Ticket médio',R(f.qtd?f.atend/f.qtd:0))}${M('Clientes cadastradas',cl.length)}</div>
-        <div class="card"><h2>Receita x despesas — últimos 6 meses</h2><div class="graf" id="g1"></div></div>
-        <div class="card"><h2>Serviços mais realizados no período</h2><div class="graf" id="g2"></div></div>
-        <div class="card"><h2>Aniversariantes do mês</h2>${aniv.length?aniv.map(c=>`<span class="pill">${U.data(c.nascimento).slice(0,5)} · ${UI.h(c.nome)}</span> `).join(''):'<p class="vazio">Nenhuma aniversariante neste mês.</p>'}</div>
-        <div class="card"><h2>Pacotes acabando</h2>${UI.tabela(['Cliente','Pacote','Restam','Validade'],fim.map(x=>[UI.h(nc[x.clienteId]||'—'),UI.h(x.nome),x.sessoesTotal-x.sessoesUsadas,U.data(x.validade)]),'Nenhum pacote perto do fim.')}</div>`;
+      const M=(i,t,v)=>`<div class="card metrica">${Icones.svg(i)}<div><small>${t}</small><div class="total-os">${v}</div></div></div>`;
+      p.innerHTML=`<div class="metricas">${M('calcheck','Atendimentos hoje',hoje.length)}${M('clock','Próximo horário',prox?`${prox.hora}${prox.data!==h?' ('+U.data(prox.data).slice(0,5)+')':''} · ${UI.h(nc[prox.clienteId]||'')}`:'—')}${M('bag','Receita no período',R(f.receita))}
+        ${M('card','Despesas pagas',R(f.despesas))}${M('coins','Comissões',R(f.comissoes))}${M('trend','Lucro estimado',R(f.lucro))}${M('ticket','Ticket médio',R(f.qtd?f.atend/f.qtd:0))}${M('users','Clientes cadastradas',cl.length)}</div>
+        <div class="card"><h2>${Icones.svg('gift')}Receita x despesas — últimos 6 meses</h2><div class="graf" id="g1"></div></div>
+        <div class="card"><h2>${Icones.svg('scissors')}Serviços mais realizados no período</h2><div class="graf" id="g2"></div></div>
+        <div class="card"><h2>${Icones.svg('gift')}Aniversariantes do mês</h2>${aniv.length?aniv.map(c=>`<span class="pill">${U.data(c.nascimento).slice(0,5)} · ${UI.h(c.nome)}</span> `).join(''):'<p class="vazio">Nenhuma aniversariante neste mês.</p>'}</div>
+        <div class="card"><h2>${Icones.svg('box')}Pacotes acabando</h2>${UI.tabela(['Cliente','Pacote','Restam','Validade'],fim.map(x=>[UI.h(nc[x.clienteId]||'—'),UI.h(x.nome),x.sessoesTotal-x.sessoesUsadas,U.data(x.validade)]),'Nenhum pacote perto do fim.')}</div>`;
       const ms=this.meses(6),rs=[];for(const m of ms)rs.push(await Financeiro.resumo(m.de,m.ate));
-      this.grafico(p.querySelector('#g1'),ms.map(m=>m.rot),[{nome:'Receita',dados:rs.map(r=>r.receita),cor:'#a855f7'},{nome:'Despesas',dados:rs.map(r=>r.despesas),cor:'#6b7280'}],R);
-      this.grafico(p.querySelector('#g2'),top.map(t=>t[0]),[{nome:'Vezes',dados:top.map(t=>t[1]),cor:'#a855f7'}],v=>v);
+      this.grafico(p.querySelector('#g1'),ms.map(m=>m.rot),[{nome:'Receita',dados:rs.map(r=>r.receita),cor:'#d6177f'},{nome:'Despesas',dados:rs.map(r=>r.despesas),cor:'#b9a0ad'}],R);
+      this.grafico(p.querySelector('#g2'),top.map(t=>t[0]),[{nome:'Vezes',dados:top.map(t=>t[1]),cor:'#d6177f'}],v=>v);
     };
     de.onchange=ate.onchange=desenhar;desenhar();
   },

@@ -3,8 +3,11 @@ const Config={
   ID:'oficina',
   async obter(){return(await DB.obter('configuracoes',this.ID))||{id:this.ID}},
   contraste(h){h=(h||'#000000').replace('#','');const[r,g,b]=[0,2,4].map(i=>parseInt(h.substr(i,2),16));return .299*r+.587*g+.114*b>150?'#1b1206':'#ffffff'},
-  async aplicarCor(){const c=await this.obter(),m=c.corPrincipal||'#4c1d95',d=c.corDestaque||c.corPrincipal||'#a855f7',s=document.documentElement.style;
-    s.setProperty('--menu',m);s.setProperty('--menu-texto',this.contraste(m));s.setProperty('--cor',d);s.setProperty('--cor-texto',this.contraste(d))},
+  async aplicarCor(){const c=await this.obter(),s=document.documentElement.style,
+    m=c.corPrincipal&&c.corPrincipal.toLowerCase()!=='#4c1d95'?c.corPrincipal:null, // padrão antigo → usa o visual novo
+    d=c.corDestaque&&c.corDestaque.toLowerCase()!=='#a855f7'?c.corDestaque:null;
+    if(m){s.setProperty('--menu',m);s.setProperty('--menu-texto',this.contraste(m))}else{s.removeProperty('--menu');s.removeProperty('--menu-texto')}
+    if(d){s.setProperty('--cor',d);s.setProperty('--cor2',d);s.setProperty('--cor-texto',this.contraste(d))}else{s.removeProperty('--cor');s.removeProperty('--cor2');s.removeProperty('--cor-texto')}},
   comprimirImagem(arq,max=400,q=.8){ // reduz e comprime antes de salvar
     return new Promise((ok,erro)=>{
       const img=new Image(),u=URL.createObjectURL(arq);
