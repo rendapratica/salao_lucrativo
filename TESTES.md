@@ -1,0 +1,11 @@
+# Roteiro de testes — Salão Lucrativo
+- [ ] Configurações: salvar dados, logo e cores; fechar e abrir o navegador (dados continuam).
+- [ ] Serviços: cadastrar 2 serviços (ex.: Manicure 45 min R$ 40; Esmaltação em gel 60 min R$ 80).
+- [ ] Clientes: cadastrar uma cliente com alergias e aniversário.
+- [ ] Agenda: marcar horário; tentar marcar outro no mesmo horário (deve avisar que está ocupado); testar o WhatsApp.
+- [ ] Atender: concluir um agendamento; conferir total, pontos e comissão; anexar fotos.
+- [ ] Pacotes: criar pacote (4 sessões), vender para a cliente e usar uma sessão no atendimento; excluir o atendimento e ver a sessão voltar.
+- [ ] Fidelidade: juntar pontos suficientes e resgatar o prêmio num atendimento.
+- [ ] Financeiro e Relatórios: receitas, despesas, comissões e exportar CSV.
+- [ ] Backup: exportar, apagar uma cliente, restaurar.
+- [ ] Offline: carregar, desligar a internet e recarregar. Tema claro/escuro.
